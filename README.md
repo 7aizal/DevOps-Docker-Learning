@@ -32,6 +32,7 @@
 <img width="861" height="463" alt="image3" src="https://github.com/user-attachments/assets/83db336f-08a2-44e2-88cd-8a42266fff9d" />
 <img width="641" height="338" alt="image2" src="https://github.com/user-attachments/assets/f42950da-fde2-4c40-ab0d-1a8ea07f739e" />
 <img width="439" height="304" alt="image" src="https://github.com/user-attachments/assets/021c019a-439f-43cd-a4e8-14b96c3a5a52" />
+ 
  ## **Docker Networking & MySQL Integration – with a Debugging Twist 🚀**
 
 **Goal:** Connect a Flask app to a MySQL database container.
