@@ -75,8 +75,8 @@
 
 **Used Docker Compose for Multi-Container Setup**
 docker-compose.yml
-
 ```yaml
+
 version: '3.8'
 services:
   web:
@@ -89,11 +89,15 @@ services:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: my-secret-pw
-Run with:
 
+```
 ```bash
 docker compose up -d
-<img width="478" height="100" alt="17" src="https://github.com/user-attachments/assets/d10e3a4b-1f47-4132-bc90-2664993e1fb0" />
-<img width="1149" height="530" alt="16" src="https://github.com/user-attachments/assets/931acf04-9b33-4870-8f63-1b25e3a2a7ea" />
-<img width="987" height="349" alt="15" src="https://github.com/user-attachments/assets/82f42b55-9953-4d01-8101-1614247b99d2" />
+```
+<img width="478" height="100" alt="17" src="https://github.com/user-attachments/assets/564d5584-d63f-4bb6-b9e3-a595426ec9c0" />
+<img width="1149" height="530" alt="16" src="https://github.com/user-attachments/assets/21ebfec3-9aa2-49ef-96f9-8cd4700902f3" />
+<img width="987" height="349" alt="15" src="https://github.com/user-attachments/assets/0ed9e006-ad02-4f9b-b95f-d3b94e31c16f" />
+
+
+
 
