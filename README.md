@@ -118,5 +118,8 @@ Run with MySQL on the Same Network:
 docker run -p 5000:5000 --network my-aws-app \
 <account_id>.dkr.ecr.eu-north-1.amazonaws.com/flask-mysql:latest
 ```
-https://cdn.discordapp.com/attachments/1249085478775427084/1404966902186643496/image.png?ex=689d1ce4&is=689bcb64&hm=fb39ea9ef26e35e3443fe3a342d0af00ce5d9f097731697dc356d10ace3e011e&
-https://cdn.discordapp.com/attachments/1249085478775427084/1404969868825985196/image.png?ex=689d1fa7&is=689bce27&hm=86668aef2f379afc16e881a93e8ca67f33fe2b2a8c00786cb1f26fa18fe9ce89&
+<img width="844" height="331" alt="18" src="https://github.com/user-attachments/assets/f606e8a9-1eb6-4009-b565-56e07bf6f793" />
+<img width="878" height="436" alt="19" src="https://github.com/user-attachments/assets/4ba0ff09-4fbe-4fd3-bc8b-5a5530e967df" />
+
+
+
