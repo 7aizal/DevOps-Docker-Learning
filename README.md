@@ -71,3 +71,29 @@
 <img width="1130" height="169" alt="14" src="https://github.com/user-attachments/assets/b113c562-88b4-48d7-b0f0-5ba9bdaf5a80" />
 <img width="546" height="333" alt="13" src="https://github.com/user-attachments/assets/88024a29-4f62-418e-b9a8-b7adacd0cb23" />
 <img width="940" height="519" alt="12" src="https://github.com/user-attachments/assets/3e60922f-635b-40ab-aefd-5b95be36c1e6" />
+
+
+**Used Docker Compose for Multi-Container Setup**
+docker-compose.yml
+
+```yaml
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mydb
+  mydb:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+Run with:
+
+```bash
+docker compose up -d
+<img width="478" height="100" alt="17" src="https://github.com/user-attachments/assets/d10e3a4b-1f47-4132-bc90-2664993e1fb0" />
+<img width="1149" height="530" alt="16" src="https://github.com/user-attachments/assets/931acf04-9b33-4870-8f63-1b25e3a2a7ea" />
+<img width="987" height="349" alt="15" src="https://github.com/user-attachments/assets/82f42b55-9953-4d01-8101-1614247b99d2" />
+
