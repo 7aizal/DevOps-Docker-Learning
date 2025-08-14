@@ -188,4 +188,87 @@ An existing image from a registry.
 
 - Adding AS build ensures COPY --from=build pulls from the first stage instead of an external image.
 
-- This keeps the final image small while still using the build dependencies from the first stage.
+- This keeps the final image small while still using the build dependencies from the first stage
+
+
+## Progression Update – Flask + Redis Multi-Container App (CODERCO CHALLENGE)
+# Summary
+
+Built and deployed a multi-container application with:
+
+- Flask app (routes: / and /count)
+
+- Redis database for visit count storage
+
+- Nginx load balancer for scaling Flask instances
+
+- Persistent Redis volume
+
+- Environment variables for configuration.
+
+## KEY FILES
+
+
+```python
+import os
+from flask import Flask
+import redis
+
+app = Flask(__name__)
+r = redis.Redis(
+    host=os.getenv('REDIS_HOST', 'localhost'),
+    port=int(os.getenv('REDIS_PORT', 6379)),
+    decode_responses=True
+)
+
+@app.route('/')
+def home():
+    return "Asalamualaikum Habibi!"
+
+@app.route('/count')
+def count():
+    return f"Number of visits: {r.incr('visits')}"
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
+```
+# docker-compose.yml 
+```yaml
+version: "3.8"
+
+services:
+  web:
+    build: .
+    expose:
+      - "5000"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+
+volumes:
+  redis-data:
+```
+
+# Commands used
+```zsh
+docker compose up --build
+docker compose up --scale web=3
+```
