@@ -13,16 +13,16 @@
   - Set the default command to run `python app.py`
 - **Built and ran the container**
   - Build:  
-    ```bash
+    ```zsh
     docker build -t hello-flask .
     ```
   - Run:  
-    ```bash
+    ```zsh
     docker run -d -p 5000:5000 hello-flask
     ```
 - The container is live and mapped to `localhost:5000`
 - **Confirmed it’s running**:  
-    ```bash
+    ```zsh
     docker ps
     ```
     Shows the container up with correct port mapping.
@@ -46,7 +46,7 @@
     RUN apt-get update && apt-get install -y gcc python3-dev libmariadb-dev pkg-config
     ```
 - Rebuilt the image:
-    ```bash
+    ```zsh
     docker build -t hello-flask-mysql .
     ```
 
@@ -57,17 +57,18 @@
 <img width="936" height="619" alt="7" src="https://github.com/user-attachments/assets/b269f4da-ad90-48f4-a82a-b877df60de11" />
 ### **Networking & Container Linking**
 1. Created a custom Docker network:
-    ```bash
+    ```zsh
     docker network create my-custom-network
     ```
 2. Ran MySQL container:
-    ```bash
+    ```zsh
     docker run -d --name mydb --network my-custom-network -e MYSQL_ROOT_PASSWORD=my-secret-pw mysql:5.7
     ```
 3. Ran Flask container on same network:
-    ```bash
+    ```zsh
     docker run -d -p 5000:5000 --network my-custom-network hello-flask-mysql
-    ```<img width="987" height="349" alt="15" src="https://github.com/user-attachments/assets/e7247281-ed9e-44c5-97c5-fbf5054f6703" />
+    ```
+    <img width="987" height="349" alt="15" src="https://github.com/user-attachments/assets/e7247281-ed9e-44c5-97c5-fbf5054f6703" />
 <img width="1130" height="169" alt="14" src="https://github.com/user-attachments/assets/b113c562-88b4-48d7-b0f0-5ba9bdaf5a80" />
 <img width="546" height="333" alt="13" src="https://github.com/user-attachments/assets/88024a29-4f62-418e-b9a8-b7adacd0cb23" />
 <img width="940" height="519" alt="12" src="https://github.com/user-attachments/assets/3e60922f-635b-40ab-aefd-5b95be36c1e6" />
@@ -75,6 +76,7 @@
 
 **Used Docker Compose for Multi-Container Setup**
 docker-compose.yml
+
 ```yaml
 
 version: '3.8'
@@ -91,7 +93,7 @@ services:
       MYSQL_ROOT_PASSWORD: my-secret-pw
 
 ```
-```bash
+```zsh
 docker compose up -d
 ```
 <img width="478" height="100" alt="17" src="https://github.com/user-attachments/assets/564d5584-d63f-4bb6-b9e3-a595426ec9c0" />
@@ -101,19 +103,19 @@ docker compose up -d
 **Pushed Image to AWS ECR**
 *Authenticate:*
 
-```bash
+```zsh
 
 aws ecr get-login-password --region eu-north-1 \
 | docker login --username AWS --password-stdin <account_id>.dkr.ecr.eu-north-1.amazonaws.com
 Tag & Push:
 ```
-```bash
+```zsh
 
 docker tag flask-mysql:latest <account_id>.dkr.ecr.eu-north-1.amazonaws.com/flask-mysql:latest
 docker push <account_id>.dkr.ecr.eu-north-1.amazonaws.com/flask-mysql:latest
 Run with MySQL on the Same Network:
 ```
-```bash
+```zsh
 
 docker run -p 5000:5000 --network my-aws-app \
 <account_id>.dkr.ecr.eu-north-1.amazonaws.com/flask-mysql:latest
@@ -121,4 +123,69 @@ docker run -p 5000:5000 --network my-aws-app \
 
 
 
+### Multi-Stage Docker Build – Error and Fix
 
+## What I Did
+- Built a multi-stage Dockerfile for a Flask + MySQL app.
+- First stage installed dependencies and MySQL client.
+- Second stage copied build output from the first stage and ran the app.
+
+**Build Command Used:**
+```zsh
+docker build -t my-flask-app:multi .
+
+```
+
+```zsh
+ERROR: failed to solve: failed to resolve source metadata for docker.io/library/build:latest:
+pull access denied, repository does not exist or may require authorization
+```
+## Cause
+
+The COPY --from=build in the second stage referenced a stage named build.
+
+I forgot to name the first stage, so Docker assumed build was an image from Docker Hub.
+
+This made Docker try to pull build:latest, which does not exist and caused the error.
+
+## Fix
+
+Named the first stage explicitly and updated the COPY instruction.
+
+```dockerfile 
+# Stage 1: Build
+FROM python:3.8-slim AS build
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    libmariadb-dev \
+    pkg-config
+
+COPY . .
+
+RUN pip install flask mysqlclient
+
+# Stage 2: Production
+FROM python:3.8-slim
+
+WORKDIR /app
+
+COPY --from=build /app /app
+
+EXPOSE 5000
+
+CMD ["python", "app.py"]
+```
+## Why This Works
+
+- In multi-stage builds, COPY --from must reference:
+
+A named stage from the current Dockerfile, or
+An existing image from a registry.
+
+- Adding AS build ensures COPY --from=build pulls from the first stage instead of an external image.
+
+- This keeps the final image small while still using the build dependencies from the first stage.
