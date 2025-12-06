@@ -1,4 +1,4 @@
-# 🐳 Docker Learning Progress
+
 
 ## **Flask App in Docker**
 - **Created a simple Flask app** (`app.py`)
