@@ -191,7 +191,7 @@ An existing image from a registry.
 - This keeps the final image small while still using the build dependencies from the first stage
 
 
-## Progression Update – Flask + Redis Multi-Container App (CODERCO CHALLENGE)
+## Progression Update – Flask + Redis Multi-Container App 
 # Summary
 
 Built and deployed a multi-container application with:
